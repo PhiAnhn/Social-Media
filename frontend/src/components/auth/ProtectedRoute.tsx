@@ -1,36 +1,34 @@
-import { useAuthStore } from "@/stores/useAuthStore.ts";
-import { useEffect } from "react";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router";
 
 const ProtectedRoute = () => {
-    // Lấy trực tiếp từ Zustand store
-    const {
-        accessToken,
-        user,
-        loading,
-        refresh,
-        fetchMe
-    } = useAuthStore();
+    const { accessToken, user, loading, refresh, fetchMe } = useAuthStore();
+    const [starting, setStarting] = useState(true);
 
-    // Khởi tạo auth khi component mount
-    useEffect(() => {
-        const init = async () => {
-            // Trường hợp refresh trang: chưa có token
-            if (!accessToken) {
+    const init = async () => {
+        // có thể xảy ra khi refresh trang
+        if (user && !accessToken) {
+            try {
                 await refresh();
+            } catch (error) {
+                console.warn("Refresh token thất bại khi init");
+                // Không cần toast ở đây, để interceptor hoặc fetchMe xử lý
             }
+        }
 
-            // Có token nhưng chưa có thông tin user
-            if (accessToken && !user) {
-                await fetchMe();
-            }
-        };
+        else if (accessToken && !user) {
+            await fetchMe().catch(() => { });
+        }
 
+        setStarting(false);
+    };
+
+    useEffect(() => {
         init();
-    }, [accessToken, user, refresh, fetchMe]);   // dependencies đúng
+    }, []);
 
-    // Hiển thị loading khi đang xử lý
-    if (loading) {
+    if (starting || loading) {
         return (
             <div className="flex h-screen items-center justify-center">
                 Đang tải trang...
@@ -38,13 +36,16 @@ const ProtectedRoute = () => {
         );
     }
 
-    // Nếu không có accessToken → chuyển hướng về đăng nhập
-    if (!accessToken) {
-        return <Navigate to="/signin" replace />;
+    if (!accessToken || !user) {
+        return (
+            <Navigate
+                to="/signin"
+                replace
+            />
+        );
     }
 
-    // Cho phép vào các route con
-    return <Outlet />;
+    return <Outlet></Outlet>;
 };
 
 export default ProtectedRoute;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
@@ -32,7 +33,7 @@ export const signUp = async (req, res) => {
             username,
             hashedPassword,
             email,
-            displayName: `${firstName} ${lastName}`,
+            displayName: `${lastName} ${firstName}`,
         });
 
         // return
@@ -162,5 +163,4 @@ export const refreshToken = async (req, res) => {
         console.error("Lỗi khi gọi refreshToken", error);
         return res.status(500).json({ message: "Lỗi hệ thống" });
     }
-
 };

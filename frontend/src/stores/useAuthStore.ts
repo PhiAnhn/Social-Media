@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { toast } from "sonner";
 import { authService } from "@/services/authService";
 import type { AuthState } from "@/types/store";
+import { useChatStore } from "./useChatStore";
 
 export const useAuthStore = create<AuthState>((set, get) => ({
     accessToken: null,
@@ -13,6 +14,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     },
     clearState: () => {
         set({ accessToken: null, user: null, loading: false });
+        localStorage.clear();
+        useChatStore.getState().reset();
     },
 
     signUp: async (username, password, email, firstName, lastName) => {
@@ -35,10 +38,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         try {
             set({ loading: true });
 
+            localStorage.clear();
+            useChatStore.getState().reset();
+
             const { accessToken } = await authService.signIn(username, password);
             get().setAccessToken(accessToken);
 
             await get().fetchMe();
+            useChatStore.getState().fetchConversations();
 
             toast.success("Chào mừng bạn quay lại với Moji 🎉");
         } catch (error) {
