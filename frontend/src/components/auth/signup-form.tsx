@@ -15,6 +15,10 @@ const signUpSchema = z.object({
   username: z.string().min(3, "Tên đăng nhập phải có ít nhất 3 ký tự"),
   email: z.email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  studentId: z.string()
+    .min(5, "Mã sinh viên phải có ít nhất 5 ký tự")
+    .max(10, "Mã sinh viên không được quá 10 ký tự"),
+  faculty: z.string().optional(),
 });
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
@@ -31,10 +35,10 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
   });
 
   const onSubmit = async (data: SignUpFormValues) => {
-    const { firstname, lastname, username, email, password } = data;
+    const { firstname, lastname, username, email, password, studentId, faculty } = data;
 
     // gọi backend để signup
-    await signUp(username, password, email, firstname, lastname);
+    await signUp(username, password, email, firstname, lastname, studentId, faculty);
 
     navigate("/signin");
   };
@@ -110,6 +114,33 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                 </div>
               </div>
 
+              {/* Mã sinh viên */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="studentId" className="block text-sm">
+                    Mã sinh viên <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    type="text"
+                    id="studentId"
+                    {...register("studentId")}
+                  />
+                  {errors.studentId && (
+                    <p className="text-destructive text-sm">{errors.studentId.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="faculty" className="block text-sm">Khoa / Bộ môn</Label>
+                  <Input
+                    type="text"
+                    id="faculty"
+                    placeholder="VD: Công nghệ thông tin"
+                    {...register("faculty")}
+                  />
+                </div>
+              </div>
+
               {/* username */}
               <div className="flex flex-col gap-3">
                 <Label
@@ -121,7 +152,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                 <Input
                   type="text"
                   id="username"
-                  placeholder="moji"
+                  placeholder=""
                   {...register("username")}
                 />
                 {errors.username && (

@@ -1,5 +1,6 @@
-import type { Conversation } from "./chat";
-import type { User } from "./user";
+import type { Socket } from "socket.io-client";
+import type { Conversation, Message } from "./chat";
+import type { Friend, FriendRequest, User } from "./user";
 
 export interface AuthState {
     accessToken: string | null;
@@ -7,13 +8,16 @@ export interface AuthState {
     loading: boolean;
 
     setAccessToken: (accessToken: string) => void;
+    setUser: (user: User) => void;
     clearState: () => void;
     signUp: (
         username: string,
         password: string,
         email: string,
         firstName: string,
-        lastName: string
+        lastName: string,
+        studentId: string,
+        faculty?: string
     ) => Promise<void>;
     signIn: (username: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
@@ -74,4 +78,21 @@ export interface SocketState {
     onlineUsers: string[];
     connectSocket: () => void;
     disconnectSocket: () => void;
+}
+
+export interface FriendState {
+    friends: Friend[];
+    loading: boolean;
+    receivedList: FriendRequest[];
+    sentList: FriendRequest[];
+    searchByUsername: (username: string) => Promise<User | null>;
+    addFriend: (to: string, message?: string) => Promise<string>;
+    getAllFriendRequests: () => Promise<void>;
+    acceptRequest: (requestId: string) => Promise<void>;
+    declineRequest: (requestId: string) => Promise<void>;
+    getFriends: () => Promise<void>;
+}
+
+export interface UserState {
+    updateAvatarUrl: (formData: FormData) => Promise<void>;
 }

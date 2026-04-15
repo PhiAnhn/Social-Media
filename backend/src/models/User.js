@@ -13,6 +13,18 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        studentId: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+            lowercase: true,
+        },
+        faculty: {
+            type: String,
+            trim: true,
+            maxlength: 100,
+        },
         email: {
             type: String,
             required: true,

@@ -5,13 +5,13 @@ import ChatWindowHeader from "./ChatWindowHeader";
 import ChatWindowBody from "./ChatWindowBody";
 import MessageInput from "./MessageInput";
 import { useEffect } from "react";
-// import ChatWindowSkeleton from "../skeleton/ChatWindowSkeleton";
+import ChatWindowSkeleton from "../skeleton/ChatWindowSkeleton";
 
 const ChatWindowLayout = () => {
     const {
         activeConversationId,
         conversations,
-        // messageLoading: loading,
+        messageLoading: loading,
         markAsSeen,
     } = useChatStore();
 
@@ -38,9 +38,9 @@ const ChatWindowLayout = () => {
         return <ChatWelcomeScreen />;
     }
 
-    // if (loading) {
-    //     return <ChatWindowSkeleton />;
-    // }
+    if (loading) {
+        return <ChatWindowSkeleton />;
+    }
 
     return (
         <SidebarInset className="flex flex-col h-full flex-1 overflow-hidden rounded-sm shadow-md">

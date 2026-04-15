@@ -1,9 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import SignInPage from "./pages/SignInPage.tsx";
-import ChatAppPage from "./pages/ChatAppPage.tsx";
+import SignInPage from "./pages/SignInPage";
+import ChatAppPage from "./pages/ChatAppPage";
 import { Toaster } from "sonner";
-import SignUpPage from "./pages/SignUpPage.tsx";
-import ProtectedRoute from "./components/auth/ProtectedRoute.tsx";
+import SignUpPage from "./pages/SignUpPage";
+import ProfilePage from "./pages/ProfilePage"
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useThemeStore } from "./stores/useThemeStore";
 import { useEffect } from "react";
 import { useAuthStore } from "./stores/useAuthStore";
@@ -47,11 +48,15 @@ function App() {
               path="/"
               element={<ChatAppPage />}
             />
+            <Route
+              path="/profile"
+              element={<ProfilePage />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

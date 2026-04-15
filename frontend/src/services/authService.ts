@@ -6,11 +6,13 @@ export const authService = {
         password: string,
         email: string,
         firstName: string,
-        lastName: string
+        lastName: string,
+        studentId: string,
+        faculty?: string
     ) => {
         const res = await api.post(
             "/auth/signup",
-            { username, password, email, firstName, lastName },
+            { username, password, email, firstName, lastName, studentId, faculty },
             { withCredentials: true }
         );
 

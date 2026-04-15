@@ -10,9 +10,9 @@ const REFRESH_TOKEN_TTL = 14 * 24 * 60 * 60 * 1000; // 14 ngày
 
 export const signUp = async (req, res) => {
     try {
-        const { username, password, email, firstName, lastName } = req.body;
+        const { username, password, email, firstName, lastName, studentId, faculty } = req.body;
 
-        if (!username || !password || !email || !firstName || !lastName) {
+        if (!username || !password || !email || !firstName || !lastName || !studentId) {
             return res.status(400).json({
                 message: "Không thể thiếu username, password, email, firstName, và lastName",
             });
@@ -31,9 +31,11 @@ export const signUp = async (req, res) => {
         // tạo user mới
         await User.create({
             username,
+            studentId,
             hashedPassword,
             email,
             displayName: `${lastName} ${firstName}`,
+            faculty,
         });
 
         // return

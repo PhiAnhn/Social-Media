@@ -1,6 +1,6 @@
 import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
-// import { io } from "../socket/index.js";
+import { io } from "../socket/index.js";
 
 export const createConversation = async (req, res) => {
     try {
@@ -76,16 +76,16 @@ export const createConversation = async (req, res) => {
 
         const formatted = { ...conversation.toObject(), participants };
 
-        // if (type === "group") {
-        //     memberIds.forEach((userId) => {
-        //         io.to(userId).emit("new-group", formatted);
-        //     });
-        // }
+        if (type === "group") {
+            memberIds.forEach((userId) => {
+                io.to(userId).emit("new-group", formatted);
+            });
+        }
 
-        // if (type === "direct") {
-        //     io.to(userId).emit("new-group", formatted);
-        //     io.to(memberIds[0]).emit("new-group", formatted);
-        // }
+        if (type === "direct") {
+            io.to(userId).emit("new-group", formatted);
+            io.to(memberIds[0]).emit("new-group", formatted);
+        }
 
         return res.status(201).json({ conversation: formatted });
     } catch (error) {

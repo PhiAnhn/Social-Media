@@ -3,6 +3,8 @@ export interface User {
     username: string;
     email: string;
     displayName: string;
+    studentId: string;
+    faculty?: string;
     avatarUrl?: string;
     bio?: string;
     phone?: string;
